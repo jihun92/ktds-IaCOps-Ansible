@@ -1,0 +1,8 @@
+---
+- name: Play
+  hosts: all
+
+  tasks:
+    - name: Show facts available on the system
+      debug:
+        msg: "nginx_latest_running_true"
