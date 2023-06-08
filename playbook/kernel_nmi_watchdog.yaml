@@ -1,0 +1,28 @@
+---
+- name: Update kernel_nmi_watchdog settings
+  hosts: localhost
+  become: yes
+
+  vars:
+    kernel_nmi_watchdog_value: "0" # or whatever value you want
+
+  tasks:
+  - name: Get current GRUB configuration
+    command: grep -P '^GRUB_CMDLINE_LINUX' /etc/sysconfig/grub
+    register: grub_line
+
+  - name: Remove old kernel_nmi_watchdog setting
+    lineinfile:
+      path: /etc/sysconfig/grub
+      line: "{{ grub_line.stdout }}"
+      state: absent
+
+  - name: Add new kernel_nmi_watchdog setting
+    lineinfile:
+      path: /etc/sysconfig/grub
+      line: "{{ grub_line.stdout }} kernel_nmi_watchdog={{ kernel_nmi_watchdog_value }}"
+      insertafter: EOF
+
+  - name: Update GRUB
+    command: grub2-mkconfig -o /boot/grub2/grub.cfg
+
