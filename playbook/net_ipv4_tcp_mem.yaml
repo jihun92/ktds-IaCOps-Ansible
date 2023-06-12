@@ -1,11 +1,11 @@
 ---
 - name: Change net.ipv4.tcp_mem values
-  hosts: localhost
+  hosts: all
   become: yes
   vars:
-    tcp_mem_min: "..."
-    tcp_mem_pressure: "..."
-    tcp_mem_max: "..."
+    tcp_mem_min: 87054
+    tcp_mem_pressure: 116072
+    tcp_mem_max: 174108
   tasks:
     - name: Set net.ipv4.tcp_mem values
       ansible.builtin.sysctl:

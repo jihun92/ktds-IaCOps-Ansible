@@ -1,0 +1,12 @@
+---
+- name: Reboot CentOS server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Reboot the server
+      reboot:
+        reboot_timeout: 300
+        post_reboot_delay: 30
+      async: 0
+      poll: 0
+
