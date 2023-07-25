@@ -1,0 +1,22 @@
+---
+- name: Install Apache HTTP Server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update yum
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+
+    - name: Install Apache package
+      yum:
+        name: httpd
+        state: latest
+
+    - name: Start Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+

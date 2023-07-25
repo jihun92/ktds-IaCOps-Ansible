@@ -1,0 +1,20 @@
+---
+- name: Update to Zabbix 5.0
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Install epel-release package
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Remove all Zabbix
+      command: yum remove -y 'zabbix*'
+
+    - name: Clean Yum Cache
+      command: yum clean all
+
+    - name: Install Zabbix 5.0 repository
+      command: yum install -y zabbix50-agent
+

@@ -1,0 +1,19 @@
+---
+- name: Install Specific Version of Apache HTTP Server
+  hosts: all
+  become: yes
+  vars:
+    apache_version: "2.4.6-99.el7.centos.1"  # Set the desired version of Apache
+
+  tasks:
+    - name: Install Apache package
+      yum:
+        name: "httpd-{{ apache_version }}"
+        state: present
+
+    - name: Start Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
