@@ -3,20 +3,41 @@
   hosts: all
   become: yes
   tasks:
+  
+    - name: Check if target OS is CentOS
+      command: cat /etc/os-release
+      register: os
+      changed_when: false
+      failed_when: "'CentOS' not in os.stdout"
+      
+    - name: Debug result of CentOS check
+      debug:
+        msg: "The OS is CentOS. Continuing with the playbook."
+      when: "'CentOS' in os.stdout"
 
     - name: Install epel-release package
       yum:
         name: epel-release
         state: present
 
-    - name: Remove all Zabbix 
+    - name: Remove all Zabbix
       command: yum remove -y 'zabbix*'
 
     - name: Clean Yum Cache
       command: yum clean all
 
-
     - name: Install Zabbix agent package
       yum:
         name: zabbix40-agent
         state: present
+        
+    - name: Check if Zabbix agent package is installed
+      command: yum list installed zabbix40-agent
+      register: result
+      failed_when: "'zabbix40-agent' not in result.stdout"
+
+    - name: Debug result of Zabbix agent package installation
+      debug:
+        msg: "Zabbix agent package has been installed successfully."
+      when: "'zabbix40-agent' in result.stdout"
+

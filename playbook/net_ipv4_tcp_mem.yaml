@@ -7,10 +7,29 @@
     tcp_mem_pressure: 116072
     tcp_mem_max: 174108
   tasks:
+    - name: Check if the system is CentOS
+      ansible.builtin.shell: |
+        if [ -f /etc/redhat-release ]; then
+          echo "This is a CentOS system."
+        else
+          exit 1
+        fi
+      register: result
+      ignore_errors: yes
+    - name: Fail if not CentOS
+      ansible.builtin.fail:
+        msg: "This playbook can only run on CentOS systems."
+      when: result is failed
     - name: Set net.ipv4.tcp_mem values
       ansible.builtin.sysctl:
         name: net.ipv4.tcp_mem
         value: "{{ tcp_mem_min }} {{ tcp_mem_pressure }} {{ tcp_mem_max }}"
         state: present
         reload: yes
+    - name: Check the current net.ipv4.tcp_mem values
+      ansible.builtin.command: sysctl net.ipv4.tcp_mem
+      register: sysctl_output
+    - name: Debug the output of net.ipv4.tcp_mem values
+      ansible.builtin.debug:
+        var: sysctl_output.stdout
 
